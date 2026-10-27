@@ -1,0 +1,56 @@
+[{
+  "_id": {
+    "$oid": "6ae068e9dbc42022d88d74f5"
+  },
+  "name": "Grožinė literatūra",
+  "description": "Romanai, apsakymai ir kiti išgalvoti pasakojimai."
+},
+{
+  "_id": {
+    "$oid": "6ae068e9dbc42022d88d74f6"
+  },
+  "name": "Mokslinė fantastika",
+  "description": "Knygos apie ateities technologijas, kosmosą ir mokslinius atradimus."
+},
+{
+  "_id": {
+    "$oid": "6ae068e9dbc42022d88d74f7"
+  },
+  "name": "Fantastika",
+  "description": "Pasakojimai apie magiją, mitines būtybes ir įsivaizduojamus pasaulius."
+},
+{
+  "_id": {
+    "$oid": "6ae068e9dbc42022d88d74f8"
+  },
+  "name": "Detektyvai ir trileriai",
+  "description": "Detektyviniai romanai, nusikaltimų tyrimai ir įtempto siužeto istorijos."
+},
+{
+  "_id": {
+    "$oid": "6ae068e9dbc42022d88d74f9"
+  },
+  "name": "Mokslas",
+  "description": "Knygos apie mokslinius tyrimus, gamtą ir visatos reiškinius."
+},
+{
+  "_id": {
+    "$oid": "6ae068e9dbc42022d88d74fa"
+  },
+  "name": "Istorija",
+  "description": "Knygos apie istorinius įvykius, asmenybes ir civilizacijas."
+},
+{
+  "_id": {
+    "$oid": "6ae068e9dbc42022d88d74fb"
+  },
+  "name": "Savęs tobulinimas",
+  "description": "Knygos apie asmeninį augimą, produktyvumą ir gerų įpročių formavimą."
+},
+{
+  "_id": {
+    "$oid": "6ae068e9dbc42022d88d74fc"
+  },
+  "name": "Technologijos",
+  "description": "Knygos apie programavimą, kompiuterius ir šiuolaikines technologijas."
+}]

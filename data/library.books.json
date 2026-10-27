@@ -1,0 +1,340 @@
+[{
+  "_id": {
+    "$oid": "6ae0697adbc42022d88d7516"
+  },
+  "title": "The Great Gatsby",
+  "author": "F. Scott Fitzgerald",
+  "isbn": "9780743273565",
+  "description": "Romanas apie turtus, ambicijas ir amerikietiškąją svajonę.",
+  "categoryId": {
+    "$oid": "672a00000000000000000001"
+  },
+  "totalCopies": 10,
+  "availableCopies": 7,
+  "coverUrl": "",
+  "isActive": true,
+  "publicationYear": null
+},
+{
+  "_id": {
+    "$oid": "6ae0697adbc42022d88d7517"
+  },
+  "title": "To Kill a Mockingbird",
+  "author": "Harper Lee",
+  "isbn": "9780061120084",
+  "description": "Romanas apie teisingumą, moralę ir vaikystę Amerikos pietuose.",
+  "categoryId": {
+    "$oid": "672a00000000000000000001"
+  },
+  "totalCopies": 8,
+  "availableCopies": 5,
+  "coverUrl": "",
+  "isActive": true,
+  "publicationYear": null
+},
+{
+  "_id": {
+    "$oid": "6ae0697adbc42022d88d7518"
+  },
+  "title": "1984",
+  "author": "George Orwell",
+  "isbn": "9780451524935",
+  "description": "Distopinis romanas apie visuotinį stebėjimą ir totalitarinį režimą.",
+  "categoryId": {
+    "$oid": "672a00000000000000000002"
+  },
+  "totalCopies": 12,
+  "availableCopies": 9,
+  "coverUrl": "",
+  "isActive": true,
+  "publicationYear": null
+},
+{
+  "_id": {
+    "$oid": "6ae0697adbc42022d88d7519"
+  },
+  "title": "Dune",
+  "author": "Frank Herbert",
+  "isbn": "9780441172719",
+  "description": "Mokslinės fantastikos epas apie dykumų planetą Arakį.",
+  "categoryId": {
+    "$oid": "672a00000000000000000002"
+  },
+  "totalCopies": 9,
+  "availableCopies": 4,
+  "coverUrl": "",
+  "isActive": true,
+  "publicationYear": null
+},
+{
+  "_id": {
+    "$oid": "6ae0697adbc42022d88d751a"
+  },
+  "title": "The Martian",
+  "author": "Andy Weir",
+  "isbn": "9780553418026",
+  "description": "Astronautas bando išgyventi vienas Marso planetoje.",
+  "categoryId": {
+    "$oid": "672a00000000000000000002"
+  },
+  "totalCopies": 7,
+  "availableCopies": 6,
+  "coverUrl": "",
+  "isActive": true,
+  "publicationYear": null
+},
+{
+  "_id": {
+    "$oid": "6ae0697adbc42022d88d751b"
+  },
+  "title": "The Hobbit",
+  "author": "J.R.R. Tolkien",
+  "isbn": "9780547928227",
+  "description": "Hobitas leidžiasi į netikėtą nuotykį kartu su nykštukų būriu.",
+  "categoryId": {
+    "$oid": "672a00000000000000000003"
+  },
+  "totalCopies": 10,
+  "availableCopies": 8,
+  "coverUrl": "",
+  "isActive": true,
+  "publicationYear": null
+},
+{
+  "_id": {
+    "$oid": "6ae0697adbc42022d88d751c"
+  },
+  "title": "Harry Potter and the Philosopher's Stone",
+  "author": "J.K. Rowling",
+  "isbn": "9780747532699",
+  "description": "Jaunas burtininkas sužino apie savo magišką kilmę.",
+  "categoryId": {
+    "$oid": "672a00000000000000000003"
+  },
+  "totalCopies": 15,
+  "availableCopies": 10,
+  "coverUrl": "",
+  "isActive": true,
+  "publicationYear": null
+},
+{
+  "_id": {
+    "$oid": "6ae0697adbc42022d88d751d"
+  },
+  "title": "The Name of the Wind",
+  "author": "Patrick Rothfuss",
+  "isbn": "9780756404741",
+  "description": "Talentingo jaunuolio gyvenimo istorija magijos kupiname pasaulyje.",
+  "categoryId": {
+    "$oid": "672a00000000000000000003"
+  },
+  "totalCopies": 6,
+  "availableCopies": 3,
+  "coverUrl": "",
+  "isActive": true,
+  "publicationYear": null
+},
+{
+  "_id": {
+    "$oid": "6ae0697adbc42022d88d751e"
+  },
+  "title": "The Girl with the Dragon Tattoo",
+  "author": "Stieg Larsson",
+  "isbn": "9780307454546",
+  "description": "Žurnalistas ir įsilaužimų ekspertė tiria prieš daugelį metų dingusios moters bylą.",
+  "categoryId": {
+    "$oid": "672a00000000000000000004"
+  },
+  "totalCopies": 8,
+  "availableCopies": 5,
+  "coverUrl": "",
+  "isActive": true,
+  "publicationYear": null
+},
+{
+  "_id": {
+    "$oid": "6ae0697adbc42022d88d751f"
+  },
+  "title": "Murder on the Orient Express",
+  "author": "Agatha Christie",
+  "isbn": "9780062693662",
+  "description": "Detektyvas Erkiulis Puaro tiria žmogžudystę traukinyje.",
+  "categoryId": {
+    "$oid": "672a00000000000000000004"
+  },
+  "totalCopies": 7,
+  "availableCopies": 2,
+  "coverUrl": "",
+  "isActive": true,
+  "publicationYear": null
+},
+{
+  "_id": {
+    "$oid": "6ae0697adbc42022d88d7520"
+  },
+  "title": "The Silent Patient",
+  "author": "Alex Michaelides",
+  "isbn": "9781250301697",
+  "description": "Psichologinis trileris apie moterį, nustojusią kalbėti po nusikaltimo.",
+  "categoryId": {
+    "$oid": "672a00000000000000000004"
+  },
+  "totalCopies": 9,
+  "availableCopies": 7,
+  "coverUrl": "",
+  "isActive": true,
+  "publicationYear": null
+},
+{
+  "_id": {
+    "$oid": "6ae0697adbc42022d88d7521"
+  },
+  "title": "A Brief History of Time",
+  "author": "Stephen Hawking",
+  "isbn": "9780553380163",
+  "description": "Knyga apie visatą, juodąsias skyles ir kosmologiją.",
+  "categoryId": {
+    "$oid": "672a00000000000000000005"
+  },
+  "totalCopies": 6,
+  "availableCopies": 4,
+  "coverUrl": "",
+  "isActive": true,
+  "publicationYear": null
+},
+{
+  "_id": {
+    "$oid": "6ae0697adbc42022d88d7522"
+  },
+  "title": "Cosmos",
+  "author": "Carl Sagan",
+  "isbn": "9780345539434",
+  "description": "Pasakojimas apie visatą ir žmonijos vietą joje.",
+  "categoryId": {
+    "$oid": "672a00000000000000000005"
+  },
+  "totalCopies": 8,
+  "availableCopies": 6,
+  "coverUrl": "",
+  "isActive": true,
+  "publicationYear": null
+},
+{
+  "_id": {
+    "$oid": "6ae0697adbc42022d88d7523"
+  },
+  "title": "The Selfish Gene",
+  "author": "Richard Dawkins",
+  "isbn": "9780198788607",
+  "description": "Evoliucijos teorijos aiškinimas, nagrinėjantis evoliuciją genų požiūriu.",
+  "categoryId": {
+    "$oid": "672a00000000000000000005"
+  },
+  "totalCopies": 5,
+  "availableCopies": 3,
+  "coverUrl": "",
+  "isActive": true,
+  "publicationYear": null
+},
+{
+  "_id": {
+    "$oid": "6ae0697adbc42022d88d7524"
+  },
+  "title": "Sapiens",
+  "author": "Yuval Noah Harari",
+  "isbn": "9780062316097",
+  "description": "Žmonijos istorija ir žmonių visuomenių raida.",
+  "categoryId": {
+    "$oid": "672a00000000000000000006"
+  },
+  "totalCopies": 10,
+  "availableCopies": 6,
+  "coverUrl": "",
+  "isActive": true,
+  "publicationYear": null
+},
+{
+  "_id": {
+    "$oid": "6ae0697adbc42022d88d7525"
+  },
+  "title": "The Diary of a Young Girl",
+  "author": "Anne Frank",
+  "isbn": "9780307594006",
+  "description": "Žydų paauglės dienoraštis, rašytas slepiantis Antrojo pasaulinio karo metais.",
+  "categoryId": {
+    "$oid": "672a00000000000000000006"
+  },
+  "totalCopies": 7,
+  "availableCopies": 4,
+  "coverUrl": "",
+  "isActive": true,
+  "publicationYear": null
+},
+{
+  "_id": {
+    "$oid": "6ae0697adbc42022d88d7526"
+  },
+  "title": "Atomic Habits",
+  "author": "James Clear",
+  "isbn": "9780735211292",
+  "description": "Praktinis vadovas, padedantis formuoti gerus ir atsisakyti žalingų įpročių.",
+  "categoryId": {
+    "$oid": "672a00000000000000000007"
+  },
+  "totalCopies": 12,
+  "availableCopies": 8,
+  "coverUrl": "",
+  "isActive": true,
+  "publicationYear": null
+},
+{
+  "_id": {
+    "$oid": "6ae0697adbc42022d88d7527"
+  },
+  "title": "Deep Work",
+  "author": "Cal Newport",
+  "isbn": "9781455586691",
+  "description": "Strategijos, padedančios susikaupti ir produktyviau dirbti.",
+  "categoryId": {
+    "$oid": "672a00000000000000000007"
+  },
+  "totalCopies": 6,
+  "availableCopies": 5,
+  "coverUrl": "",
+  "isActive": true,
+  "publicationYear": null
+},
+{
+  "_id": {
+    "$oid": "6ae0697adbc42022d88d7528"
+  },
+  "title": "Clean Code",
+  "author": "Robert C. Martin",
+  "isbn": "9780132350884",
+  "description": "Principai ir praktikos, padedantys rašyti aiškų ir lengvai prižiūrimą kodą.",
+  "categoryId": {
+    "$oid": "672a00000000000000000008"
+  },
+  "totalCopies": 10,
+  "availableCopies": 7,
+  "coverUrl": "",
+  "isActive": true,
+  "publicationYear": null
+},
+{
+  "_id": {
+    "$oid": "6ae0697adbc42022d88d7529"
+  },
+  "title": "The Pragmatic Programmer",
+  "author": "David Thomas and Andrew Hunt",
+  "isbn": "9780135957059",
+  "description": "Praktiniai patarimai ir metodai efektyviam programinės įrangos kūrimui.",
+  "categoryId": {
+    "$oid": "672a00000000000000000008"
+  },
+  "totalCopies": 8,
+  "availableCopies": 6,
+  "coverUrl": "",
+  "isActive": true,
+  "publicationYear": null
+}]

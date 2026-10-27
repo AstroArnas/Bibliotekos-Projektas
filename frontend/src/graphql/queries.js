@@ -2,19 +2,36 @@
 import { gql } from "@apollo/client";
 
 export const GET_BOOKS = gql`
-  query Books($search: String, $categoryId: ID) {
-    books(search: $search, categoryId: $categoryId) {
-      id
-      title
-      author
-      isbn
-      description
-      totalCopies
-      availableCopies
-      category {
+  query Books(
+    $search: String
+    $categoryId: ID
+    $page: Int!
+    $limit: Int!
+  ) {
+    books(
+      search: $search
+      categoryId: $categoryId
+      page: $page
+      limit: $limit
+    ) {
+      items {
         id
-        name
+        title
+        author
+        isbn
+        description
+        publicationYear
+        coverUrl
+        totalCopies
+        availableCopies
+        isActive
+        category {
+          id
+          name
+        }
       }
+      totalItems
+      totalPages
     }
   }
 `;
@@ -115,7 +132,7 @@ export const RESERVE_BOOK = gql`
 
 export const RENEW_RESERVATION = gql`
   mutation RenewReservation($reservationId: ID!) {
-    renewReservation(reservationId: $reservationId) {
+    renewReservation(id: $reservationId) {
       id
       status
       dueDate
@@ -126,7 +143,7 @@ export const RENEW_RESERVATION = gql`
 
 export const CANCEL_RESERVATION = gql`
   mutation CancelReservation($reservationId: ID!) {
-    cancelReservation(reservationId: $reservationId) {
+    cancelReservation(id: $reservationId) {
       id
       status
     }
@@ -155,7 +172,7 @@ export const CREATE_BOOK = gql`
 `;
 
 export const UPDATE_BOOK = gql`
-  mutation UpdateBook($id: ID!, $input: BookInput!) {
+  mutation UpdateBook($id: ID!, $input: BookUpdateInput!) {
     updateBook(id: $id, input: $input) {
       id
       title
@@ -183,7 +200,10 @@ export const CREATE_CATEGORY = gql`
 `;
 
 export const UPDATE_CATEGORY = gql`
-  mutation UpdateCategory($id: ID!, $input: CategoryInput!) {
+  mutation UpdateCategory(
+    $id: ID!
+    $input: CategoryUpdateInput!
+  ) {
     updateCategory(id: $id, input: $input) {
       id
       name

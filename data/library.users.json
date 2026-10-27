@@ -1,0 +1,33 @@
+[{
+  "_id": {
+    "$oid": "6ae05faf255ca0fa0c09c8bc"
+  },
+  "name": "user",
+  "email": "user@gmail.com",
+  "passwordHash": "$2b$12$ythl1xkXmOR9PhCZrmWxoux.dnwe7oQKnlKm/AAvVJUEZ4gRuZLdu",
+  "role": "ADMIN",
+  "createdAt": {
+    "$date": "2026-10-27T08:24:15.495Z"
+  },
+  "updatedAt": {
+    "$date": "2026-10-27T08:24:15.495Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6ae0665305b6f3147e91dc8b"
+  },
+  "name": "user2",
+  "email": "user2@gmail.com",
+  "passwordHash": "$2b$12$SDka2cqEZe9KZHNj9TED1O/GA.0oiIaTlqHbuy/hXZwxFQ/jmuSm.",
+  "role": "USER",
+  "isActive": true,
+  "createdAt": {
+    "$date": "2026-10-27T08:52:35.816Z"
+  },
+  "updatedAt": {
+    "$date": "2026-10-27T08:52:35.816Z"
+  },
+  "__v": 0
+}]

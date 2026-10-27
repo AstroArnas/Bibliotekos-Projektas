@@ -1,4 +1,3 @@
-
 import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
 import { GraphQLError } from "graphql";
@@ -30,9 +29,7 @@ function requireText(value, field, maxLength = 250) {
     !value.trim() ||
     value.trim().length > maxLength
   ) {
-    fail(
-      `${field} is required and must be at most ${maxLength} characters.`
-    );
+    fail(`${field} is required and must be at most ${maxLength} characters.`);
   }
 
   return value.trim();
@@ -92,10 +89,7 @@ async function ensureReservationExists(id, session) {
 function assertReservationOwner(reservation, user) {
   const ownerId = reservation.user?._id ?? reservation.user;
 
-  if (
-    ownerId.toString() !== user._id.toString() &&
-    user.role !== "ADMIN"
-  ) {
+  if (ownerId.toString() !== user._id.toString() && user.role !== "ADMIN") {
     fail("You cannot access this reservation.", "FORBIDDEN");
   }
 }
@@ -126,17 +120,13 @@ async function runTransaction(callback) {
   }
 }
 
-
 export const resolvers = {
   Query: {
-    books: async (_, { search, categoryId }) => {
-      const filter = {};
+    books: async (_, { search, categoryId, page = 1, limit = 8 }) => {
+      const filter = { isActive: { $ne: false } };
 
       if (search?.trim()) {
-        const escaped = search.trim().replace(
-          /[.*+?^${}()|[\]\\]/g,
-          "\\$&"
-        );
+        const escaped = search.trim().replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
         const expression = new RegExp(escaped, "i");
 
@@ -148,19 +138,33 @@ export const resolvers = {
       }
 
       if (categoryId) {
-        filter.category = requireObjectId(
-          categoryId,
-          "categoryId"
-        );
+        filter.categoryId = requireObjectId(categoryId, "categoryId");
       }
 
-      return Book.find(filter)
-        .sort({ title: 1 })
-        .limit(200);
+      const safePage = Math.max(1, page);
+      const safeLimit = Math.min(50, Math.max(1, limit));
+
+      const [items, totalItems] = await Promise.all([
+        Book.find(filter)
+          .sort({ title: 1 })
+          .skip((safePage - 1) * safeLimit)
+          .limit(safeLimit),
+
+        Book.countDocuments(filter),
+      ]);
+
+      return {
+        items,
+        totalItems,
+        totalPages: Math.ceil(totalItems / safeLimit),
+      };
     },
 
     book: async (_, { id }) => {
-      return Book.findById(requireObjectId(id));
+      return Book.findOne({
+        _id: requireObjectId(id),
+        isActive: { $ne: false },
+      });
     },
 
     categories: async () => {
@@ -168,14 +172,13 @@ export const resolvers = {
     },
 
     me: (_, __, context) => {
-      return context.user;
+      return requireAuth(context);
     },
 
     myReservations: async (_, __, context) => {
       const user = requireAuth(context);
 
-      return Reservation.find({ user: user._id })
-        .sort({ createdAt: -1 });
+      return Reservation.find({ user: user._id }).sort({ createdAt: -1 });
     },
 
     reservation: async (_, { id }, context) => {
@@ -204,21 +207,18 @@ export const resolvers = {
 
       const filter = {};
 
-      if (status) filter.status = status;
+      if (status) {
+        filter.status = status;
+      }
 
-      return Reservation.find(filter)
-        .sort({ createdAt: -1 });
+      return Reservation.find(filter).sort({ createdAt: -1 });
     },
   },
 
   Mutation: {
     register: async (_, { name, email, password }) => {
       const cleanName = requireText(name, "Name", 100);
-      const cleanEmail = requireText(
-        email,
-        "Email",
-        254
-      ).toLowerCase();
+      const cleanEmail = requireText(email, "Email", 254).toLowerCase();
 
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(cleanEmail)) {
         fail("Enter a valid email address.");
@@ -245,13 +245,15 @@ export const resolvers = {
       let user;
 
       try {
-        [user] = await User.create([{
-          name: cleanName,
-          email: cleanEmail,
-          passwordHash,
-          role: "USER",
-          isActive: true,
-        }]);
+        [user] = await User.create([
+          {
+            name: cleanName,
+            email: cleanEmail,
+            passwordHash,
+            role: "USER",
+            isActive: true,
+          },
+        ]);
       } catch (error) {
         if (error.code === 11000) {
           fail("An account with this email already exists.");
@@ -267,11 +269,7 @@ export const resolvers = {
     },
 
     login: async (_, { email, password }) => {
-      const cleanEmail = requireText(
-        email,
-        "Email",
-        254
-      ).toLowerCase();
+      const cleanEmail = requireText(email, "Email", 254).toLowerCase();
 
       const user = await User.findOne({
         email: cleanEmail,
@@ -281,10 +279,7 @@ export const resolvers = {
         fail("Invalid email or password.", "UNAUTHENTICATED");
       }
 
-      const validPassword = await bcrypt.compare(
-        password,
-        user.passwordHash
-      );
+      const validPassword = await bcrypt.compare(password, user.passwordHash);
 
       if (!validPassword) {
         fail("Invalid email or password.", "UNAUTHENTICATED");
@@ -301,23 +296,36 @@ export const resolvers = {
 
       const title = requireText(input.title, "Title");
       const author = requireText(input.author, "Author", 150);
-      const totalCopies = requireInteger(
-        input.totalCopies,
-        "totalCopies"
-      );
+
+      const totalCopies = requireInteger(input.totalCopies, "totalCopies");
 
       await ensureCategoryExists(input.categoryId);
 
-      return Book.create({
+      const bookData = {
         title,
         author,
         isbn: input.isbn?.trim() || undefined,
         description: input.description ?? "",
-        category: input.categoryId,
+        categoryId: input.categoryId,
         totalCopies,
         availableCopies: totalCopies,
         coverUrl: input.coverUrl ?? "",
-      });
+        isActive: true,
+      };
+
+      if (input.publicationYear != null) {
+        bookData.publicationYear = requireInteger(
+          input.publicationYear,
+          "publicationYear",
+          1,
+        );
+
+        if (input.publicationYear > 9999) {
+          fail("Publication year cannot exceed 9999.");
+        }
+      }
+
+      return Book.create(bookData);
     },
 
     updateBook: async (_, { id, input }, context) => {
@@ -327,7 +335,7 @@ export const resolvers = {
 
       if (input.categoryId !== undefined) {
         await ensureCategoryExists(input.categoryId);
-        book.category = input.categoryId;
+        book.categoryId = input.categoryId;
       }
 
       if (input.title !== undefined) {
@@ -350,18 +358,36 @@ export const resolvers = {
         book.coverUrl = input.coverUrl;
       }
 
-      if (input.totalCopies !== undefined) {
-        const newTotal = requireInteger(
-          input.totalCopies,
-          "totalCopies"
-        );
+      if (input.publicationYear !== undefined) {
+        if (input.publicationYear === null) {
+          book.publicationYear = undefined;
+        } else {
+          const year = requireInteger(
+            input.publicationYear,
+            "publicationYear",
+            1,
+          );
 
-        const checkedOut =
-          book.totalCopies - book.availableCopies;
+          if (year > 9999) {
+            fail("Publication year cannot exceed 9999.");
+          }
+
+          book.publicationYear = year;
+        }
+      }
+
+      if (input.isActive !== undefined) {
+        book.isActive = input.isActive;
+      }
+
+      if (input.totalCopies !== undefined) {
+        const newTotal = requireInteger(input.totalCopies, "totalCopies");
+
+        const checkedOut = book.totalCopies - book.availableCopies;
 
         if (newTotal < checkedOut) {
           fail(
-            "Total copies cannot be less than the number currently on loan."
+            "Total copies cannot be less than the number currently on loan.",
           );
         }
 
@@ -374,24 +400,29 @@ export const resolvers = {
       return book;
     },
 
-    deleteBook: async (_, { id }, context) => {
+    archiveBook: async (_, { id }, context) => {
       requireRole(context, "ADMIN");
 
       const book = await ensureBookExists(id);
 
-      const activeReservations =
-        await Reservation.countDocuments({
-          book: book._id,
-          status: "ACTIVE",
-        });
-
-      if (activeReservations > 0) {
-        fail("Cannot delete a book with active reservations.");
+      if (!book.isActive) {
+        return book;
       }
 
-      await book.deleteOne();
+      const activeReservations = await Reservation.countDocuments({
+        book: book._id,
+        status: "ACTIVE",
+      });
 
-      return true;
+      if (activeReservations > 0) {
+        fail("Cannot archive a book with active reservations.");
+      }
+
+      book.isActive = false;
+
+      await book.save();
+
+      return book;
     },
 
     createCategory: async (_, { input }, context) => {
@@ -406,20 +437,14 @@ export const resolvers = {
     updateCategory: async (_, { id, input }, context) => {
       requireRole(context, "ADMIN");
 
-      const category = await Category.findById(
-        requireObjectId(id)
-      );
+      const category = await Category.findById(requireObjectId(id));
 
       if (!category) {
         fail("Category not found.", "NOT_FOUND");
       }
 
       if (input.name !== undefined) {
-        category.name = requireText(
-          input.name,
-          "Category name",
-          100
-        );
+        category.name = requireText(input.name, "Category name", 100);
       }
 
       if (input.description !== undefined) {
@@ -434,16 +459,14 @@ export const resolvers = {
     deleteCategory: async (_, { id }, context) => {
       requireRole(context, "ADMIN");
 
-      const category = await Category.findById(
-        requireObjectId(id)
-      );
+      const category = await Category.findById(requireObjectId(id));
 
       if (!category) {
         fail("Category not found.", "NOT_FOUND");
       }
 
       const bookCount = await Book.countDocuments({
-        category: category._id,
+        categoryId: category._id,
       });
 
       if (bookCount > 0) {
@@ -453,46 +476,6 @@ export const resolvers = {
       await category.deleteOne();
 
       return true;
-    },
-
-    updateUserRole: async (_, { id, role }, context) => {
-      const admin = requireRole(context, "ADMIN");
-
-      const user = await User.findById(requireObjectId(id));
-
-      if (!user) fail("User not found.", "NOT_FOUND");
-
-      if (
-        user._id.toString() === admin._id.toString() &&
-        role !== "ADMIN"
-      ) {
-        fail("You cannot remove your own administrator role.", "FORBIDDEN");
-      }
-
-      user.role = role;
-      await user.save();
-
-      return user;
-    },
-
-    setUserActive: async (_, { id, isActive }, context) => {
-      const admin = requireRole(context, "ADMIN");
-
-      const user = await User.findById(requireObjectId(id));
-
-      if (!user) fail("User not found.", "NOT_FOUND");
-
-      if (
-        user._id.toString() === admin._id.toString() &&
-        !isActive
-      ) {
-        fail("You cannot deactivate your own account.", "FORBIDDEN");
-      }
-
-      user.isActive = isActive;
-      await user.save();
-
-      return user;
     },
 
     reserveBook: async (_, { bookId }, context) => {
@@ -509,7 +492,7 @@ export const resolvers = {
           {
             $inc: { availableCopies: -1 },
           },
-          { session }
+          { session },
         );
 
         if (inventory.modifiedCount !== 1) {
@@ -517,15 +500,17 @@ export const resolvers = {
         }
 
         const [reservation] = await Reservation.create(
-          [{
-            user: user._id,
-            book: book._id,
-            status: "ACTIVE",
-            reservedAt: new Date(),
-            dueDate: getDueDate(),
-            renewalCount: 0,
-          }],
-          { session }
+          [
+            {
+              user: user._id,
+              book: book._id,
+              status: "ACTIVE",
+              reservedAt: new Date(),
+              dueDate: getDueDate(),
+              renewalCount: 0,
+            },
+          ],
+          { session },
         );
 
         return reservation;
@@ -549,7 +534,7 @@ export const resolvers = {
           {
             $set: { status: "CANCELLED" },
           },
-          { session }
+          { session },
         );
 
         if (result.modifiedCount !== 1) {
@@ -559,7 +544,7 @@ export const resolvers = {
         await Book.updateOne(
           { _id: reservation.book },
           { $inc: { availableCopies: 1 } },
-          { session }
+          { session },
         );
 
         return Reservation.findById(reservation._id).session(session);
@@ -586,8 +571,7 @@ export const resolvers = {
         const previousDueDate = reservation.dueDate;
 
         const newDueDate = new Date(
-          previousDueDate.getTime() +
-          LOAN_DAYS * 24 * 60 * 60 * 1000
+          previousDueDate.getTime() + LOAN_DAYS * 24 * 60 * 60 * 1000,
         );
 
         const result = await Reservation.updateOne(
@@ -601,7 +585,7 @@ export const resolvers = {
             $set: { dueDate: newDueDate },
             $inc: { renewalCount: 1 },
           },
-          { session }
+          { session },
         );
 
         if (result.modifiedCount !== 1) {
@@ -629,7 +613,7 @@ export const resolvers = {
           {
             $set: { status: "RETURNED" },
           },
-          { session }
+          { session },
         );
 
         if (result.modifiedCount !== 1) {
@@ -639,7 +623,7 @@ export const resolvers = {
         await Book.updateOne(
           { _id: reservation.book },
           { $inc: { availableCopies: 1 } },
-          { session }
+          { session },
         );
 
         return Reservation.findById(reservation._id).session(session);
