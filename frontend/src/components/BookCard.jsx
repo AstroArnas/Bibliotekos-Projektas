@@ -9,7 +9,6 @@ export default function BookCard({ book }) {
 
   return (
     <article className="flex h-full flex-col overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-lg motion-reduce:transform-none">
-      {/* Cover */}
       <Link
         to={bookUrl}
         className="flex h-52 items-center justify-center bg-slate-100 p-4 sm:h-60"
@@ -27,32 +26,30 @@ export default function BookCard({ book }) {
         />
       </Link>
 
-      {/* Information */}
       <div className="flex flex-1 flex-col p-4">
         <p className="mb-2 text-xs font-bold uppercase tracking-wide text-library-primary">
           {book.category?.name || "Kategorija nenurodyta"}
         </p>
 
-        <h2 className="mb-2 wrap-break-word text-base font-bold">
+        <h2 className="mb-2 wrap-break-word text-base font-bold text-[#263347]">
           <Link
             to={bookUrl}
-            className="text-library-text hover:text-library-primary"
+            className="transition hover:text-library-primary"
           >
             {book.title}
           </Link>
         </h2>
 
-        <p className="mb-4 text-sm text-library-muted">
-          {book.author}
+        <p className="mb-4 text-sm text-slate-500">
+          {book.author || "Autorius nenurodytas"}
         </p>
 
-        {/* Availability */}
         <div className="mt-auto">
           <p
             className={`text-xs font-semibold ${
               available
-                ? "text-library-success"
-                : "text-library-danger"
+                ? "text-green-700"
+                : "text-red-700"
             }`}
           >
             {available
@@ -62,7 +59,7 @@ export default function BookCard({ book }) {
 
           <Link
             to={bookUrl}
-            className="mt-3 block rounded-lg border border-library-primary px-4 py-2.5 text-center text-sm font-semibold text-library-primary transition hover:bg-library-primary hover:text-white focus:outline-none focus:ring-2 focus:ring-library-primary/30"
+            className="mt-3 block rounded-lg border border-library-primary px-4 py-2.5 text-center text-sm font-semibold text-library-primary transition hover:bg-library-primary hover:text-white focus:outline-none focus:ring-4 focus:ring-blue-100"
           >
             Knygos informacija
           </Link>
