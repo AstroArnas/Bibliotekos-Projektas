@@ -1,3 +1,4 @@
+
 import mongoose from "mongoose";
 
 const userSchema = new mongoose.Schema(
@@ -24,6 +25,10 @@ const userSchema = new mongoose.Schema(
       enum: ["ADMIN", "USER"],
       default: "USER",
       required: true,
+    },
+    isActive: {
+      type: Boolean,
+      default: true,
     },
   },
   { timestamps: true }
