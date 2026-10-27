@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useQuery } from "@apollo/client";
 import { Link } from "react-router-dom";
@@ -26,194 +25,242 @@ export default function HomePage() {
   const result = data?.books;
   const books = result?.items ?? [];
 
-  function updateSearch(value) {
-    setSearch(value);
+  const inputClass =
+    "w-full rounded-lg border border-slate-300 bg-white px-4 py-3 outline-none focus:border-library-primary focus:ring-2 focus:ring-library-primary/20";
+
+  const buttonClass =
+    "rounded-lg border border-slate-200 px-4 py-2 text-sm font-medium text-library-primary hover:bg-library-accent disabled:opacity-40 disabled:cursor-not-allowed";
+
+  function resetFilters() {
+    setSearch("");
+    setCategoryId("");
     setPage(1);
   }
 
-  function updateCategory(value) {
-    setCategoryId(value);
-    setPage(1);
+  function changePage(nextPage) {
+    setPage(nextPage);
+    document.getElementById("catalog")?.scrollIntoView({
+      behavior: "smooth",
+    });
   }
 
   return (
     <>
-      <section className="hero-section">
-        <div className="hero-content">
-          <span className="eyebrow">ATRASKITE SAVO KITĄ KNYGĄ</span>
-          <h1>Kiekviena knyga atveria naują pasaulį.</h1>
-          <p>
+      {/* Hero */}
+      <section className="rounded-b-2xl bg-linear-to-r from-[#193750] to-[#567e9e] px-6 py-16 text-white sm:px-10 lg:px-16">
+        <div className="mx-auto max-w-4xl">
+          <p className="mb-3 text-xs font-bold tracking-widest text-blue-100">
+            ATRASKITE SAVO KITĄ KNYGĄ
+          </p>
+
+          <h1 className="mb-4 text-4xl font-extrabold leading-tight sm:text-5xl">
+            Kiekviena knyga atveria naują pasaulį.
+          </h1>
+
+          <p className="mb-6 max-w-2xl text-base leading-7 text-blue-50 sm:text-lg">
             Ieškokite knygų miesto bibliotekos kataloge ir rezervuokite
             norimą leidinį internetu.
           </p>
-          <a href="#catalog" className="btn btn-light btn-lg mt-2">
+
+          <a
+            href="#catalog"
+            className="inline-block rounded-lg bg-white px-6 py-3 font-semibold text-[#193750] hover:bg-blue-50 focus:outline-none focus:ring-4 focus:ring-white/30"
+          >
             Naršyti katalogą ↓
           </a>
         </div>
       </section>
 
-      <section id="catalog" className="catalog-section">
-        <div className="d-flex flex-wrap align-items-end justify-content-between gap-3 mb-4">
+      {/* Catalog */}
+      <section
+        id="catalog"
+        className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:py-14"
+      >
+        <div className="mb-6 flex flex-wrap items-end justify-between gap-3">
           <div>
-            <span className="eyebrow text-primary">KNYGŲ KOLEKCIJA</span>
-            <h2 className="section-title mb-1">Bibliotekos katalogas</h2>
-            <p className="text-secondary mb-0">
+            <p className="mb-2 text-xs font-bold tracking-widest text-library-primary">
+              KNYGŲ KOLEKCIJA
+            </p>
+
+            <h2 className="mb-2 text-3xl font-bold sm:text-4xl">
+              Bibliotekos katalogas
+            </h2>
+
+            <p className="text-sm text-library-muted sm:text-base">
               Raskite knygą pagal pavadinimą, autorių arba ISBN.
             </p>
           </div>
 
-          <span className="text-secondary small">
+          <p className="text-sm text-library-muted">
             {result?.totalItems ?? 0} knygų
-          </span>
+          </p>
         </div>
 
-        <div className="search-panel card border-0 shadow-sm mb-4">
-          <div className="card-body p-3">
-            <div className="row g-3">
-              <div className="col-12 col-md-8">
-                <label htmlFor="bookSearch" className="form-label">
-                  Knygos paieška
-                </label>
-                <input
-                  id="bookSearch"
-                  className="form-control form-control-lg"
-                  type="search"
-                  placeholder="Pvz., Haris Poteris arba J. K. Rowling"
-                  value={search}
-                  onChange={(event) => updateSearch(event.target.value)}
-                />
-              </div>
+        {/* Filters */}
+        <div className="mb-6 rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+          <div className="grid gap-4 md:grid-cols-3">
+            <div className="md:col-span-2">
+              <label
+                htmlFor="bookSearch"
+                className="mb-2 block text-sm font-semibold"
+              >
+                Knygos paieška
+              </label>
 
-              <div className="col-12 col-md-4">
-                <label htmlFor="categoryFilter" className="form-label">
-                  Kategorija
-                </label>
-                <select
-                  id="categoryFilter"
-                  className="form-select form-select-lg"
-                  value={categoryId}
-                  onChange={(event) => updateCategory(event.target.value)}
-                >
-                  <option value="">Visos kategorijos</option>
-                  {(categoryData?.categories ?? [])
-                    .filter((category) => category.isActive !== false)
-                    .map((category) => (
-                      <option key={category.id} value={category.id}>
-                        {category.name}
-                      </option>
-                    ))}
-                </select>
-              </div>
+              <input
+                id="bookSearch"
+                type="search"
+                className={inputClass}
+                placeholder="Pvz., Haris Poteris arba J. K. Rowling"
+                value={search}
+                onChange={(event) => {
+                  setSearch(event.target.value);
+                  setPage(1);
+                }}
+              />
+            </div>
+
+            <div>
+              <label
+                htmlFor="categoryFilter"
+                className="mb-2 block text-sm font-semibold"
+              >
+                Kategorija
+              </label>
+
+              <select
+                id="categoryFilter"
+                className={inputClass}
+                value={categoryId}
+                onChange={(event) => {
+                  setCategoryId(event.target.value);
+                  setPage(1);
+                }}
+              >
+                <option value="">Visos kategorijos</option>
+
+                {(categoryData?.categories ?? [])
+                  .filter((category) => category.isActive !== false)
+                  .map((category) => (
+                    <option key={category.id} value={category.id}>
+                      {category.name}
+                    </option>
+                  ))}
+              </select>
             </div>
           </div>
         </div>
 
+        {/* Loading */}
         {loading && (
-          <div className="text-center py-5" role="status">
-            <div className="spinner-border text-primary" />
-            <p className="mt-3 text-secondary">Kraunamas katalogas...</p>
-          </div>
+          <p
+            className="py-12 text-center text-library-muted"
+            role="status"
+            aria-live="polite"
+          >
+            Kraunamas katalogas...
+          </p>
         )}
 
+        {/* Error */}
         {error && !result && (
-          <div className="alert alert-danger">
+          <p
+            className="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-800"
+            role="alert"
+          >
             Nepavyko įkelti knygų katalogo. Patikrinkite, ar serveris
             paleistas, ir bandykite dar kartą.
-          </div>
+          </p>
         )}
 
+        {/* Empty state */}
         {!loading && !error && books.length === 0 && (
-          <div className="empty-state">
-            <div className="empty-icon">⌕</div>
-            <h3>Knygų nerasta</h3>
-            <p>Pabandykite pakeisti paieškos frazę arba kategoriją.</p>
+          <div className="rounded-xl border border-dashed border-slate-300 bg-white p-10 text-center">
+            <p className="mb-2 text-4xl text-slate-400" aria-hidden="true">
+              ⌕
+            </p>
+
+            <h3 className="mb-2 text-xl font-bold">Knygų nerasta</h3>
+
+            <p className="mb-5 text-library-muted">
+              Pabandykite pakeisti paieškos frazę arba kategoriją.
+            </p>
+
             <button
-              className="btn btn-outline-primary"
-              onClick={() => {
-                setSearch("");
-                setCategoryId("");
-                setPage(1);
-              }}
+              type="button"
+              className={buttonClass}
+              onClick={resetFilters}
             >
               Išvalyti filtrus
             </button>
           </div>
         )}
 
-        <div className="row g-4">
+        {/* Books */}
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {books.map((book) => (
-            <div className="col-12 col-sm-6 col-lg-4 col-xl-3" key={book.id}>
-              <BookCard book={book} />
-            </div>
+            <BookCard key={book.id} book={book} />
           ))}
         </div>
 
+        {/* Pagination */}
         {result && result.totalPages > 1 && (
           <nav
-            className="mt-5"
+            className="mt-10 flex flex-wrap justify-center gap-2"
             aria-label="Katalogo puslapiai"
           >
-            <ul className="pagination justify-content-center flex-wrap">
-              <li className={`page-item ${page <= 1 ? "disabled" : ""}`}>
-                <button
-                  className="page-link"
-                  disabled={page <= 1}
-                  onClick={() => {
-                    setPage((current) => current - 1);
-                    document
-                      .getElementById("catalog")
-                      ?.scrollIntoView({ behavior: "smooth" });
-                  }}
-                >
-                  Ankstesnis
-                </button>
-              </li>
+            <button
+              className={buttonClass}
+              disabled={page <= 1}
+              onClick={() => changePage(page - 1)}
+            >
+              Ankstesnis
+            </button>
 
-              {Array.from(
-                { length: result.totalPages },
-                (_, index) => index + 1
-              ).map((pageNumber) => (
-                <li
-                  className={`page-item ${
-                    pageNumber === page ? "active" : ""
-                  }`}
-                  key={pageNumber}
-                >
-                  <button
-                    className="page-link"
-                    aria-current={pageNumber === page ? "page" : undefined}
-                    onClick={() => setPage(pageNumber)}
-                  >
-                    {pageNumber}
-                  </button>
-                </li>
-              ))}
-
-              <li
-                className={`page-item ${
-                  page >= result.totalPages ? "disabled" : ""
+            {Array.from(
+              { length: result.totalPages },
+              (_, index) => index + 1
+            ).map((pageNumber) => (
+              <button
+                key={pageNumber}
+                className={`min-w-10 rounded-lg border px-3 py-2 text-sm font-semibold ${
+                  pageNumber === page
+                    ? "border-library-primary bg-library-primary text-white"
+                    : "border-slate-200 text-library-primary hover:bg-library-accent"
                 }`}
+                aria-current={pageNumber === page ? "page" : undefined}
+                onClick={() => changePage(pageNumber)}
               >
-                <button
-                  className="page-link"
-                  disabled={page >= result.totalPages}
-                  onClick={() => setPage((current) => current + 1)}
-                >
-                  Kitas
-                </button>
-              </li>
-            </ul>
+                {pageNumber}
+              </button>
+            ))}
+
+            <button
+              className={buttonClass}
+              disabled={page >= result.totalPages}
+              onClick={() => changePage(page + 1)}
+            >
+              Kitas
+            </button>
           </nav>
         )}
 
-        <div className="catalog-help mt-5">
+        {/* Registration */}
+        <div className="mt-12 flex flex-col gap-4 rounded-2xl bg-library-accent p-6 sm:p-8 md:flex-row md:items-center md:justify-between">
           <div>
-            <h3>Jūsų kita mėgstamiausia knyga laukia.</h3>
-            <p className="mb-0">
+            <h3 className="mb-2 text-xl font-bold">
+              Jūsų kita mėgstamiausia knyga laukia.
+            </h3>
+
+            <p className="text-[#52677a]">
               Prisijunkite, rezervuokite ir sekite skaitymo terminus.
             </p>
           </div>
-          <Link to="/register" className="btn btn-primary">
+
+          <Link
+            to="/register"
+            className="rounded-lg bg-library-primary px-5 py-3 text-center font-semibold text-white hover:bg-library-dark focus:outline-none focus:ring-2 focus:ring-library-primary/30"
+          >
             Sukurti paskyrą
           </Link>
         </div>
