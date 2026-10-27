@@ -1,1 +1,8 @@
 @import "tailwindcss";
+
+@theme {
+  --color-library-primary: #315c81;
+  --color-library-dark: #193750;
+  --color-library-accent: #e5edf5;
+  --color-library-background: #f8f9fc;
+}

@@ -1,5 +1,17 @@
 import { useState } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faBookOpen,
+  faBars,
+  faXmark,
+  faBookmark,
+  faGear,
+  faRightToBracket,
+  faRightFromBracket,
+  faUserPlus,
+  faUser,
+} from "@fortawesome/free-solid-svg-icons";
 import { useAuth } from "../context/AuthContext.jsx";
 
 export default function Navbar() {
@@ -16,14 +28,14 @@ export default function Navbar() {
   }
 
   const navLinkClass = ({ isActive }) =>
-    `rounded-lg px-3 py-2 text-sm font-medium transition ${
+    `flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition ${
       isActive
         ? "bg-white/10 text-white"
         : "text-slate-200 hover:bg-white/10 hover:text-white"
     }`;
 
   const buttonClass =
-    "rounded-lg px-4 py-2 text-sm font-semibold transition focus:outline-none focus:ring-2 focus:ring-white/60";
+    "inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold transition focus:outline-none focus:ring-2 focus:ring-white/60";
 
   return (
     <nav className="relative z-50 bg-library-dark text-white">
@@ -34,9 +46,11 @@ export default function Navbar() {
           onClick={closeMenu}
           className="flex items-center gap-2 text-lg font-bold tracking-tight sm:text-xl"
         >
-          <span className="text-2xl text-blue-200" aria-hidden="true">
-            ▤
-          </span>
+          <FontAwesomeIcon
+            icon={faBookOpen}
+            className="text-2xl text-blue-200"
+            aria-hidden="true"
+          />
           Miesto biblioteka
         </Link>
 
@@ -49,29 +63,11 @@ export default function Navbar() {
           aria-label={menuOpen ? "Uždaryti meniu" : "Atidaryti meniu"}
           onClick={() => setMenuOpen(!menuOpen)}
         >
-          {menuOpen ? (
-            <svg
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              className="size-6"
-              aria-hidden="true"
-            >
-              <path d="m6 6 12 12M18 6 6 18" />
-            </svg>
-          ) : (
-            <svg
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              className="size-6"
-              aria-hidden="true"
-            >
-              <path d="M4 6h16M4 12h16M4 18h16" />
-            </svg>
-          )}
+          <FontAwesomeIcon
+            icon={menuOpen ? faXmark : faBars}
+            className="size-6"
+            aria-hidden="true"
+          />
         </button>
 
         {/* Navigation */}
@@ -87,6 +83,7 @@ export default function Navbar() {
             className={navLinkClass}
             onClick={closeMenu}
           >
+            <FontAwesomeIcon icon={faBookOpen} aria-hidden="true" />
             Knygų katalogas
           </NavLink>
 
@@ -96,6 +93,7 @@ export default function Navbar() {
               className={navLinkClass}
               onClick={closeMenu}
             >
+              <FontAwesomeIcon icon={faBookmark} aria-hidden="true" />
               Mano rezervacijos
             </NavLink>
           )}
@@ -106,13 +104,15 @@ export default function Navbar() {
               className={navLinkClass}
               onClick={closeMenu}
             >
+              <FontAwesomeIcon icon={faGear} aria-hidden="true" />
               Administravimas
             </NavLink>
           )}
 
           {user ? (
             <>
-              <span className="px-3 py-2 text-sm text-blue-100">
+              <span className="flex items-center gap-2 px-3 py-2 text-sm text-blue-100">
+                <FontAwesomeIcon icon={faUser} aria-hidden="true" />
                 {user.name}
               </span>
 
@@ -121,6 +121,10 @@ export default function Navbar() {
                 className={`${buttonClass} border border-white text-white hover:bg-white hover:text-library-dark`}
                 onClick={handleLogout}
               >
+                <FontAwesomeIcon
+                  icon={faRightFromBracket}
+                  aria-hidden="true"
+                />
                 Atsijungti
               </button>
             </>
@@ -131,6 +135,10 @@ export default function Navbar() {
                 className={navLinkClass}
                 onClick={closeMenu}
               >
+                <FontAwesomeIcon
+                  icon={faRightToBracket}
+                  aria-hidden="true"
+                />
                 Prisijungti
               </NavLink>
 
@@ -139,6 +147,7 @@ export default function Navbar() {
                 onClick={closeMenu}
                 className={`${buttonClass} bg-white text-library-dark hover:bg-blue-50`}
               >
+                <FontAwesomeIcon icon={faUserPlus} aria-hidden="true" />
                 Registruotis
               </Link>
             </>
