@@ -2,36 +2,19 @@
 import { gql } from "@apollo/client";
 
 export const GET_BOOKS = gql`
-  query Books(
-    $search: String
-    $categoryId: ID
-    $page: Int
-    $limit: Int
-  ) {
-    books(
-      search: $search
-      categoryId: $categoryId
-      page: $page
-      limit: $limit
-    ) {
-      items {
+  query Books($search: String, $categoryId: ID) {
+    books(search: $search, categoryId: $categoryId) {
+      id
+      title
+      author
+      isbn
+      description
+      totalCopies
+      availableCopies
+      category {
         id
-        title
-        author
-        isbn
-        description
-        publicationYear
-        coverUrl
-        availableCopies
-        totalCopies
-        isActive
-        category {
-          id
-          name
-        }
+        name
       }
-      totalPages
-      totalItems
     }
   }
 `;
@@ -63,7 +46,6 @@ export const GET_CATEGORIES = gql`
       id
       name
       description
-      isActive
     }
   }
 `;
