@@ -47,7 +47,7 @@ export default function HomePage() {
   return (
     <>
       {/* Hero */}
-      <section className="rounded-b-2xl bg-linear-to-r from-[#193750] to-[#567e9e] px-6 py-16 text-white sm:px-10 lg:px-16">
+      <section className="rounded-b-2xl bg-linear-to-r from-library-dark to-[#567e9e] px-6 py-16 text-white sm:px-10 lg:px-16">
         <div className="mx-auto max-w-4xl">
           <p className="mb-3 text-xs font-bold tracking-widest text-blue-100">
             ATRASKITE SAVO KITĄ KNYGĄ
@@ -64,7 +64,7 @@ export default function HomePage() {
 
           <a
             href="#catalog"
-            className="inline-block rounded-lg bg-white px-6 py-3 font-semibold text-[#193750] hover:bg-blue-50 focus:outline-none focus:ring-4 focus:ring-white/30"
+            className="inline-block rounded-lg bg-white px-6 py-3 font-semibold text-library-dark hover:bg-blue-50 focus:outline-none focus:ring-4 focus:ring-white/30"
           >
             Naršyti katalogą ↓
           </a>

@@ -1,5 +1,7 @@
-
 import { Navigate, Route, Routes } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faBookOpen } from "@fortawesome/free-solid-svg-icons";
+
 import Navbar from "./components/Navbar";
 import ProtectedRoute from "./components/ProtectedRoute";
 
@@ -12,10 +14,10 @@ import AdminPage from "./pages/AdminPage";
 
 export default function App() {
   return (
-    <>
+    <div className="flex min-h-screen flex-col bg-library-background">
       <Navbar />
 
-      <main className="container py-4">
+      <main className="mx-auto w-full max-w-7xl flex-1">
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/books/:id" element={<BookDetailsPage />} />
@@ -44,11 +46,16 @@ export default function App() {
         </Routes>
       </main>
 
-      <footer className="site-footer">
-        <div className="container">
-          Miesto biblioteka · Knygos kiekvienam
+      <footer className="mt-8 border-t border-slate-200 bg-white px-4 py-6 text-center text-sm text-slate-500 sm:px-6">
+        <div className="mx-auto flex max-w-7xl items-center justify-center gap-2">
+          <FontAwesomeIcon
+            icon={faBookOpen}
+            className="text-library-primary"
+            aria-hidden="true"
+          />
+          <span>Miesto biblioteka · Knygos kiekvienam</span>
         </div>
       </footer>
-    </>
+    </div>
   );
 }
