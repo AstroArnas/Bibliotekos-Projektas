@@ -1,7 +1,9 @@
-
 import { useState } from "react";
 import { useMutation } from "@apollo/client";
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faBookOpen, faRightToBracket } from "@fortawesome/free-solid-svg-icons";
+
 import { LOGIN } from "../graphql/queries.js";
 import { useAuth } from "../context/AuthContext.jsx";
 
@@ -32,29 +34,40 @@ export default function LoginPage() {
     await login({ variables: { email: email.trim(), password } });
   }
 
+  const inputClass =
+    "w-full rounded-lg border border-slate-300 px-3 py-2.5 focus:border-library-primary focus:outline-none focus:ring-2 focus:ring-library-primary/20";
+
   return (
-    <div className="auth-wrapper">
-      <div className="card auth-card border-0 shadow-sm">
-        <div className="auth-icon">▤</div>
-        <h1 className="h3 text-center fw-bold">Sveiki sugrįžę</h1>
-        <p className="text-secondary text-center mb-4">
+    <div className="mx-auto max-w-md py-10">
+      <div className="rounded-xl bg-white p-6 shadow-sm sm:p-8">
+        <div className="mb-4 text-center text-3xl text-library-primary">
+          <FontAwesomeIcon icon={faBookOpen} />
+        </div>
+
+        <h1 className="text-center text-2xl font-bold text-slate-800">
+          Sveiki sugrįžę
+        </h1>
+        <p className="mb-6 mt-2 text-center text-slate-500">
           Prisijunkite prie bibliotekos paskyros.
         </p>
 
         {message && (
-          <div className="alert alert-danger" role="alert">
+          <p
+            className="mb-4 rounded-lg bg-red-50 p-3 text-sm text-red-700"
+            role="alert"
+          >
             {message}
-          </div>
+          </p>
         )}
 
-        <form onSubmit={handleSubmit}>
-          <div className="mb-3">
-            <label className="form-label" htmlFor="email">
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label htmlFor="email" className="mb-1 block text-sm font-medium">
               El. paštas
             </label>
             <input
               id="email"
-              className="form-control"
+              className={inputClass}
               type="email"
               autoComplete="email"
               value={email}
@@ -63,13 +76,16 @@ export default function LoginPage() {
             />
           </div>
 
-          <div className="mb-4">
-            <label className="form-label" htmlFor="password">
+          <div>
+            <label
+              htmlFor="password"
+              className="mb-1 block text-sm font-medium"
+            >
               Slaptažodis
             </label>
             <input
               id="password"
-              className="form-control"
+              className={inputClass}
               type="password"
               autoComplete="current-password"
               value={password}
@@ -79,16 +95,20 @@ export default function LoginPage() {
           </div>
 
           <button
-            className="btn btn-primary btn-lg w-100"
             type="submit"
             disabled={loading}
+            className="flex w-full items-center justify-center gap-2 rounded-lg bg-library-primary px-4 py-2.5 font-semibold text-white hover:bg-library-dark disabled:opacity-60"
           >
+            <FontAwesomeIcon icon={faRightToBracket} />
             {loading ? "Jungiamasi..." : "Prisijungti"}
           </button>
         </form>
 
-        <p className="text-center mt-4 mb-0">
-          Neturite paskyros? <Link to="/register">Registruokitės</Link>
+        <p className="mt-5 text-center text-sm text-slate-600">
+          Neturite paskyros?{" "}
+          <Link to="/register" className="font-semibold text-library-primary hover:underline">
+            Registruokitės
+          </Link>
         </p>
       </div>
     </div>

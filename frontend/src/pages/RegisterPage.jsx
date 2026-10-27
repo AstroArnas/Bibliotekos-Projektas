@@ -1,7 +1,9 @@
-
 import { useState } from "react";
 import { useMutation } from "@apollo/client";
 import { Link, useNavigate } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faUserPlus, faBookOpen } from "@fortawesome/free-solid-svg-icons";
+
 import { REGISTER } from "../graphql/queries.js";
 import { useAuth } from "../context/AuthContext.jsx";
 
@@ -46,27 +48,41 @@ export default function RegisterPage() {
     });
   }
 
+  const inputClass =
+    "w-full rounded-lg border border-slate-300 px-3 py-2.5 focus:border-library-primary focus:outline-none focus:ring-2 focus:ring-library-primary/20";
+
   return (
-    <div className="auth-wrapper">
-      <div className="card auth-card border-0 shadow-sm">
-        <div className="auth-icon">＋</div>
-        <h1 className="h3 text-center fw-bold">Sukurti paskyrą</h1>
-        <p className="text-secondary text-center mb-4">
+    <div className="mx-auto max-w-md py-10">
+      <div className="rounded-xl bg-white p-6 shadow-sm sm:p-8">
+        <div className="mb-4 text-center text-3xl text-library-primary">
+          <FontAwesomeIcon icon={faBookOpen} />
+        </div>
+
+        <h1 className="text-center text-2xl font-bold text-slate-800">
+          Sukurti paskyrą
+        </h1>
+
+        <p className="mb-6 mt-2 text-center text-slate-500">
           Prisijunkite prie skaitytojų bendruomenės.
         </p>
 
         {message && (
-          <div className="alert alert-danger" role="alert">
+          <p
+            className="mb-4 rounded-lg bg-red-50 p-3 text-sm text-red-700"
+            role="alert"
+          >
             {message}
-          </div>
+          </p>
         )}
 
-        <form onSubmit={handleSubmit}>
-          <div className="mb-3">
-            <label className="form-label" htmlFor="name">Vardas</label>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label htmlFor="name" className="mb-1 block text-sm font-medium">
+              Vardas
+            </label>
             <input
               id="name"
-              className="form-control"
+              className={inputClass}
               autoComplete="name"
               value={name}
               onChange={(event) => setName(event.target.value)}
@@ -75,11 +91,13 @@ export default function RegisterPage() {
             />
           </div>
 
-          <div className="mb-3">
-            <label className="form-label" htmlFor="email">El. paštas</label>
+          <div>
+            <label htmlFor="email" className="mb-1 block text-sm font-medium">
+              El. paštas
+            </label>
             <input
               id="email"
-              className="form-control"
+              className={inputClass}
               type="email"
               autoComplete="email"
               value={email}
@@ -88,13 +106,16 @@ export default function RegisterPage() {
             />
           </div>
 
-          <div className="mb-3">
-            <label className="form-label" htmlFor="password">
+          <div>
+            <label
+              htmlFor="password"
+              className="mb-1 block text-sm font-medium"
+            >
               Slaptažodis
             </label>
             <input
               id="password"
-              className="form-control"
+              className={inputClass}
               type="password"
               autoComplete="new-password"
               minLength={8}
@@ -102,16 +123,21 @@ export default function RegisterPage() {
               onChange={(event) => setPassword(event.target.value)}
               required
             />
-            <div className="form-text">Mažiausiai 8 simboliai.</div>
+            <p className="mt-1 text-xs text-slate-500">
+              Mažiausiai 8 simboliai.
+            </p>
           </div>
 
-          <div className="mb-4">
-            <label className="form-label" htmlFor="confirmPassword">
+          <div>
+            <label
+              htmlFor="confirmPassword"
+              className="mb-1 block text-sm font-medium"
+            >
               Pakartokite slaptažodį
             </label>
             <input
               id="confirmPassword"
-              className="form-control"
+              className={inputClass}
               type="password"
               autoComplete="new-password"
               value={confirmPassword}
@@ -121,16 +147,23 @@ export default function RegisterPage() {
           </div>
 
           <button
-            className="btn btn-primary btn-lg w-100"
             type="submit"
             disabled={loading}
+            className="flex w-full items-center justify-center gap-2 rounded-lg bg-library-primary px-4 py-2.5 font-semibold text-white hover:bg-library-dark disabled:opacity-60"
           >
+            <FontAwesomeIcon icon={faUserPlus} />
             {loading ? "Kuriama paskyra..." : "Registruotis"}
           </button>
         </form>
 
-        <p className="text-center mt-4 mb-0">
-          Jau turite paskyrą? <Link to="/login">Prisijunkite</Link>
+        <p className="mt-5 text-center text-sm text-slate-600">
+          Jau turite paskyrą?{" "}
+          <Link
+            to="/login"
+            className="font-semibold text-library-primary hover:underline"
+          >
+            Prisijunkite
+          </Link>
         </p>
       </div>
     </div>
