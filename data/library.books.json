@@ -14,7 +14,7 @@
     "availableCopies": 7,
     "coverUrl": "",
     "isActive": true,
-    "publicationYear": null
+    "publicationYear": 1925
   },
   {
     "_id": {
@@ -31,7 +31,7 @@
     "availableCopies": 5,
     "coverUrl": "",
     "isActive": true,
-    "publicationYear": null
+    "publicationYear": 1960
   },
   {
     "_id": {
@@ -48,7 +48,7 @@
     "availableCopies": 9,
     "coverUrl": "",
     "isActive": true,
-    "publicationYear": null
+    "publicationYear": 1949
   },
   {
     "_id": {
@@ -65,7 +65,7 @@
     "availableCopies": 4,
     "coverUrl": "",
     "isActive": true,
-    "publicationYear": null
+    "publicationYear": 1965
   },
   {
     "_id": {
@@ -82,7 +82,7 @@
     "availableCopies": 6,
     "coverUrl": "",
     "isActive": true,
-    "publicationYear": null
+    "publicationYear": 2011
   },
   {
     "_id": {
@@ -99,7 +99,7 @@
     "availableCopies": 8,
     "coverUrl": "",
     "isActive": true,
-    "publicationYear": null
+    "publicationYear": 1937
   },
   {
     "_id": {
@@ -116,7 +116,7 @@
     "availableCopies": 10,
     "coverUrl": "",
     "isActive": true,
-    "publicationYear": null
+    "publicationYear": 1997
   },
   {
     "_id": {
@@ -133,7 +133,7 @@
     "availableCopies": 3,
     "coverUrl": "",
     "isActive": true,
-    "publicationYear": null
+    "publicationYear": 2007
   },
   {
     "_id": {
@@ -150,7 +150,7 @@
     "availableCopies": 5,
     "coverUrl": "",
     "isActive": true,
-    "publicationYear": null
+    "publicationYear": 2005
   },
   {
     "_id": {
@@ -167,7 +167,7 @@
     "availableCopies": 2,
     "coverUrl": "",
     "isActive": true,
-    "publicationYear": null
+    "publicationYear": 1934
   },
   {
     "_id": {
@@ -184,7 +184,7 @@
     "availableCopies": 7,
     "coverUrl": "",
     "isActive": true,
-    "publicationYear": null
+    "publicationYear": 2019
   },
   {
     "_id": {
@@ -201,7 +201,7 @@
     "availableCopies": 4,
     "coverUrl": "",
     "isActive": true,
-    "publicationYear": null
+    "publicationYear": 1988
   },
   {
     "_id": {
@@ -218,7 +218,7 @@
     "availableCopies": 6,
     "coverUrl": "",
     "isActive": true,
-    "publicationYear": null
+    "publicationYear": 1980
   },
   {
     "_id": {
@@ -235,7 +235,7 @@
     "availableCopies": 3,
     "coverUrl": "",
     "isActive": true,
-    "publicationYear": null
+    "publicationYear": 1976
   },
   {
     "_id": {
@@ -252,7 +252,7 @@
     "availableCopies": 6,
     "coverUrl": "",
     "isActive": true,
-    "publicationYear": null
+    "publicationYear": 2011
   },
   {
     "_id": {
@@ -269,7 +269,7 @@
     "availableCopies": 4,
     "coverUrl": "",
     "isActive": true,
-    "publicationYear": null
+    "publicationYear": 1947
   },
   {
     "_id": {
@@ -286,7 +286,7 @@
     "availableCopies": 8,
     "coverUrl": "",
     "isActive": true,
-    "publicationYear": null
+    "publicationYear": 2018
   },
   {
     "_id": {
@@ -303,7 +303,7 @@
     "availableCopies": 5,
     "coverUrl": "",
     "isActive": true,
-    "publicationYear": null
+    "publicationYear": 2016
   },
   {
     "_id": {
@@ -320,7 +320,7 @@
     "availableCopies": 7,
     "coverUrl": "",
     "isActive": true,
-    "publicationYear": null
+    "publicationYear": 2008
   },
   {
     "_id": {
@@ -337,6 +337,6 @@
     "availableCopies": 6,
     "coverUrl": "",
     "isActive": true,
-    "publicationYear": null
+    "publicationYear": 1999
   }
 ]
