@@ -87,7 +87,7 @@ async function ensureReservationExists(id, session) {
 }
 
 function assertReservationOwner(reservation, user) {
-  const ownerId = reservation.user?._id ?? reservation.user;
+  const ownerId = reservation.userId?._id ?? reservation.userId;
 
   if (ownerId.toString() !== user._id.toString() && user.role !== "ADMIN") {
     fail("You cannot access this reservation.", "FORBIDDEN");
@@ -119,6 +119,43 @@ async function runTransaction(callback) {
     await session.endSession();
   }
 }
+
+
+async function ensureUserExists(userId) {
+  const id = requireObjectId(userId, "userId");
+  const user = await User.findById(id);
+
+  if (!user) {
+    fail("User not found.", "NOT_FOUND");
+  }
+
+  return user;
+}
+
+async function ensureEmailIsAvailable(email, excludeUserId = null) {
+  const filter = { email };
+
+  if (excludeUserId) {
+    filter._id = { $ne: excludeUserId };
+  }
+
+  const existingUser = await User.findOne(filter);
+
+  if (existingUser) {
+    fail("An account with this email already exists.");
+  }
+}
+
+function validateEmail(email) {
+  const cleanEmail = requireText(email, "Email", 254).toLowerCase();
+
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(cleanEmail)) {
+    fail("Enter a valid email address.");
+  }
+
+  return cleanEmail;
+}
+
 
 export const resolvers = {
   Query: {
@@ -178,7 +215,7 @@ export const resolvers = {
     myReservations: async (_, __, context) => {
       const user = requireAuth(context);
 
-      return Reservation.find({ user: user._id }).sort({ createdAt: -1 });
+      return Reservation.find({ userId: user._id }).sort({ createdAt: -1 });
     },
 
     reservation: async (_, { id }, context) => {
@@ -290,6 +327,107 @@ export const resolvers = {
         user,
       };
     },
+
+
+    createUser: async (_, { input }, context) => {
+      requireRole(context, "ADMIN");
+
+      const name = requireText(input.name, "Name", 100);
+      const email = validateEmail(input.email);
+
+      if (
+        typeof input.password !== "string" ||
+        input.password.length < 8 ||
+        input.password.length > 72
+      ) {
+        fail("Password must be between 8 and 72 characters.");
+      }
+
+      const role = input.role ?? "USER";
+
+      if (!["USER", "ADMIN"].includes(role)) {
+        fail("Invalid user role.");
+      }
+
+      await ensureEmailIsAvailable(email);
+
+      const passwordHash = await bcrypt.hash(input.password, 12);
+
+      try {
+        const [user] = await User.create([
+          {
+            name,
+            email,
+            passwordHash,
+            role,
+            isActive: true,
+          },
+        ]);
+
+        return user;
+      } catch (error) {
+        if (error.code === 11000) {
+          fail("An account with this email already exists.");
+        }
+
+        throw error;
+      }
+    },
+
+    updateUser: async (_, { id, input }, context) => {
+      requireRole(context, "ADMIN");
+
+      const user = await ensureUserExists(id);
+
+      if (input.name !== undefined) {
+        user.name = requireText(input.name, "Name", 100);
+      }
+
+      if (input.email !== undefined) {
+        const email = validateEmail(input.email);
+
+        await ensureEmailIsAvailable(email, user._id);
+
+        user.email = email;
+      }
+
+      if (input.role !== undefined) {
+        if (!["USER", "ADMIN"].includes(input.role)) {
+          fail("Invalid user role.");
+        }
+
+        user.role = input.role;
+      }
+
+      if (input.isActive !== undefined) {
+        user.isActive = input.isActive;
+      }
+
+      await user.save();
+
+      return user;
+    },
+
+    deactivateUser: async (_, { id }, context) => {
+      const admin = requireRole(context, "ADMIN");
+
+      const user = await ensureUserExists(id);
+
+      if (user._id.toString() === admin._id.toString()) {
+        fail("You cannot deactivate your own account.");
+      }
+
+      if (!user.isActive) {
+        return user;
+      }
+
+      user.isActive = false;
+
+      await user.save();
+
+      return user;
+    },
+
 
     createBook: async (_, { input }, context) => {
       requireRole(context, "ADMIN");
@@ -410,7 +548,7 @@ export const resolvers = {
       }
 
       const activeReservations = await Reservation.countDocuments({
-        book: book._id,
+        bookId: book._id,
         status: "ACTIVE",
       });
 
@@ -502,12 +640,12 @@ export const resolvers = {
         const [reservation] = await Reservation.create(
           [
             {
-              user: user._id,
-              book: book._id,
+              userId: user._id,
+              bookId: book._id,
               status: "ACTIVE",
               reservedAt: new Date(),
               dueDate: getDueDate(),
-              renewalCount: 0,
+              extensionCount: 0,
             },
           ],
           { session },
@@ -542,7 +680,7 @@ export const resolvers = {
         }
 
         await Book.updateOne(
-          { _id: reservation.book },
+          { _id: reservation.bookId },
           { $inc: { availableCopies: 1 } },
           { session },
         );
@@ -560,7 +698,7 @@ export const resolvers = {
         assertReservationOwner(reservation, user);
         assertActiveReservation(reservation);
 
-        if (reservation.renewalCount >= MAX_RENEWALS) {
+        if (reservation.extensionCount >= MAX_RENEWALS) {
           fail("The maximum of two renewals has been reached.");
         }
 
@@ -571,19 +709,20 @@ export const resolvers = {
         const previousDueDate = reservation.dueDate;
 
         const newDueDate = new Date(
-          previousDueDate.getTime() + LOAN_DAYS * 24 * 60 * 60 * 1000,
+          previousDueDate.getTime() +
+          LOAN_DAYS * 24 * 60 * 60 * 1000,
         );
 
         const result = await Reservation.updateOne(
           {
             _id: reservation._id,
             status: "ACTIVE",
-            renewalCount: { $lt: MAX_RENEWALS },
+            extensionCount: { $lt: MAX_RENEWALS },
             dueDate: previousDueDate,
           },
           {
             $set: { dueDate: newDueDate },
-            $inc: { renewalCount: 1 },
+            $inc: { extensionCount: 1 },
           },
           { session },
         );
@@ -611,7 +750,10 @@ export const resolvers = {
             status: "ACTIVE",
           },
           {
-            $set: { status: "RETURNED" },
+            $set: {
+              status: "RETURNED",
+              returnedAt: new Date(),
+            },
           },
           { session },
         );
@@ -621,7 +763,7 @@ export const resolvers = {
         }
 
         await Book.updateOne(
-          { _id: reservation.book },
+          { _id: reservation.bookId },
           { $inc: { availableCopies: 1 } },
           { session },
         );
@@ -657,19 +799,19 @@ export const resolvers = {
     id: (reservation) => reservation._id.toString(),
 
     user: async (reservation) => {
-      if (reservation.user && reservation.user.name) {
-        return reservation.user;
+      if (reservation.userId?.name) {
+        return reservation.userId;
       }
 
-      return User.findById(reservation.user);
+      return User.findById(reservation.userId);
     },
 
     book: async (reservation) => {
-      if (reservation.book && reservation.book.title) {
-        return reservation.book;
+      if (reservation.bookId?.title) {
+        return reservation.bookId;
       }
 
-      return Book.findById(reservation.book);
+      return Book.findById(reservation.bookId);
     },
 
     reservedAt: (reservation) => toDate(reservation.reservedAt),

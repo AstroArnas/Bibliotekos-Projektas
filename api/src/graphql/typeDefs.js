@@ -58,7 +58,7 @@ export const typeDefs = gql`
     status: ReservationStatus!
     reservedAt: String!
     dueDate: String!
-    renewalCount: Int!
+    extensionCount: Int!
     createdAt: String!
   }
 

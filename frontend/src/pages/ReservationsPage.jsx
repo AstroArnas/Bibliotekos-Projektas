@@ -100,7 +100,7 @@ export default function ReservationsPage() {
       <div className="space-y-4">
         {reservations.map((reservation) => {
           const active = reservation.status === "ACTIVE";
-          const renewals = reservation.renewalCount ?? 0;
+          const renewals = reservation.extensionCount ?? 0;
           const overdue =
             active && new Date(reservation.dueDate) < new Date();
 
@@ -128,12 +128,12 @@ export default function ReservationsPage() {
                   <img
                     className="h-28 w-20 rounded-md bg-slate-100 object-contain sm:h-32 sm:w-24"
                     src={
-                      reservation.book?.coverUrl ||
+                      reservation.bookId?.coverUrl ||
                       "https://placehold.co/160x220/ece8df/425466?text=Knyga"
                     }
                     alt={
-                      reservation.book?.title
-                        ? `Knygos viršelis: ${reservation.book.title}`
+                      reservation.bookId?.title
+                        ? `Knygos viršelis: ${reservation.bookId.title}`
                         : "Knygos viršelis"
                     }
                     loading="lazy"
@@ -142,11 +142,11 @@ export default function ReservationsPage() {
 
                 <div className="min-w-0">
                   <h2 className="mb-1 text-lg font-bold leading-snug text-[#263347]">
-                    {reservation.book?.title || "Nežinoma knyga"}
+                    {reservation.bookId?.title || "Nežinoma knyga"}
                   </h2>
 
                   <p className="mb-3 text-sm text-slate-500">
-                    {reservation.book?.author || "Autorius nenurodytas"}
+                    {reservation.bookId?.author || "Autorius nenurodytas"}
                   </p>
 
                   <div className="space-y-1 text-sm text-slate-600">

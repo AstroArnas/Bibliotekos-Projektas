@@ -108,7 +108,7 @@ export const GET_MY_RESERVATIONS = gql`
       status
       reservedAt
       dueDate
-      renewalCount
+      extensionCount
       book {
         id
         title
@@ -125,7 +125,7 @@ export const RESERVE_BOOK = gql`
       id
       status
       dueDate
-      renewalCount
+      extensionCount
     }
   }
 `;
@@ -136,7 +136,7 @@ export const RENEW_RESERVATION = gql`
       id
       status
       dueDate
-      renewalCount
+      extensionCount
     }
   }
 `;
