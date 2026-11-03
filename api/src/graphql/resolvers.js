@@ -1,4 +1,3 @@
-import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
 import { GraphQLError } from "graphql";
 
@@ -102,22 +101,6 @@ function assertActiveReservation(reservation) {
 
 function getDueDate(days = LOAN_DAYS) {
   return new Date(Date.now() + days * 24 * 60 * 60 * 1000);
-}
-
-async function runTransaction(callback) {
-  const session = await mongoose.startSession();
-
-  try {
-    let result;
-
-    await session.withTransaction(async () => {
-      result = await callback(session);
-    });
-
-    return result;
-  } finally {
-    await session.endSession();
-  }
 }
 
 
@@ -619,157 +602,153 @@ export const resolvers = {
     reserveBook: async (_, { bookId }, context) => {
       const user = requireAuth(context);
 
-      return runTransaction(async (session) => {
-        const book = await ensureBookExists(bookId, session);
+      const book = await ensureBookExists(bookId);
 
-        const inventory = await Book.updateOne(
-          {
-            _id: book._id,
-            availableCopies: { $gt: 0 },
-          },
-          {
-            $inc: { availableCopies: -1 },
-          },
-          { session },
-        );
+      if (!book.isActive) {
+        fail("This book is currently unavailable.");
+      }
 
-        if (inventory.modifiedCount !== 1) {
-          fail("No copies of this book are currently available.");
+      // Atomically decrease available copies.
+      const inventory = await Book.updateOne(
+        {
+          _id: book._id,
+          isActive: { $ne: false },
+          availableCopies: { $gt: 0 },
+        },
+        {
+          $inc: { availableCopies: -1 },
         }
+      );
 
-        const [reservation] = await Reservation.create(
-          [
-            {
-              userId: user._id,
-              bookId: book._id,
-              status: "ACTIVE",
-              reservedAt: new Date(),
-              dueDate: getDueDate(),
-              extensionCount: 0,
-            },
-          ],
-          { session },
-        );
+      if (inventory.modifiedCount !== 1) {
+        fail("No copies of this book are currently available.");
+      }
+
+      try {
+        const reservation = await Reservation.create({
+          userId: user._id,
+          bookId: book._id,
+          status: "ACTIVE",
+          reservedAt: new Date(),
+          dueDate: getDueDate(),
+          extensionCount: 0,
+        });
 
         return reservation;
-      });
+      } catch (error) {
+        // Restore inventory if reservation creation fails.
+        await Book.updateOne(
+          { _id: book._id },
+          { $inc: { availableCopies: 1 } }
+        );
+
+        throw error;
+      }
     },
 
     cancelReservation: async (_, { id }, context) => {
       const user = requireAuth(context);
 
-      return runTransaction(async (session) => {
-        const reservation = await ensureReservationExists(id, session);
+      const reservation = await ensureReservationExists(id);
 
-        assertReservationOwner(reservation, user);
-        assertActiveReservation(reservation);
+      assertReservationOwner(reservation, user);
+      assertActiveReservation(reservation);
 
-        const result = await Reservation.updateOne(
-          {
-            _id: reservation._id,
-            status: "ACTIVE",
-          },
-          {
-            $set: { status: "CANCELLED" },
-          },
-          { session },
-        );
+      const result = await Reservation.updateOne(
+        {
+          _id: reservation._id,
+          status: "ACTIVE",
+        },
+        {
+          $set: { status: "CANCELLED" },
+        });
 
-        if (result.modifiedCount !== 1) {
-          fail("Reservation has already changed.");
-        }
+      if (result.modifiedCount !== 1) {
+        fail("Reservation has already changed.");
+      }
 
-        await Book.updateOne(
-          { _id: reservation.bookId },
-          { $inc: { availableCopies: 1 } },
-          { session },
-        );
+      await Book.updateOne(
+        { _id: reservation.bookId },
+        { $inc: { availableCopies: 1 } }
+      );
 
-        return Reservation.findById(reservation._id).session(session);
-      });
+      return Reservation.findById(reservation._id);
     },
 
     renewReservation: async (_, { id }, context) => {
       const user = requireAuth(context);
 
-      return runTransaction(async (session) => {
-        const reservation = await ensureReservationExists(id, session);
+      const reservation = await ensureReservationExists(id);
 
-        assertReservationOwner(reservation, user);
-        assertActiveReservation(reservation);
+      assertReservationOwner(reservation, user);
+      assertActiveReservation(reservation);
 
-        if (reservation.extensionCount >= MAX_RENEWALS) {
-          fail("The maximum of two renewals has been reached.");
+      if (reservation.extensionCount >= MAX_RENEWALS) {
+        fail("The maximum of two renewals has been reached.");
+      }
+
+      if (reservation.dueDate <= new Date()) {
+        fail("Overdue reservations cannot be renewed.");
+      }
+
+      const previousDueDate = reservation.dueDate;
+
+      const newDueDate = new Date(
+        previousDueDate.getTime() +
+        LOAN_DAYS * 24 * 60 * 60 * 1000
+      );
+
+      const result = await Reservation.updateOne(
+        {
+          _id: reservation._id,
+          status: "ACTIVE",
+          extensionCount: { $lt: MAX_RENEWALS },
+          dueDate: previousDueDate,
+        },
+        {
+          $set: { dueDate: newDueDate },
+          $inc: { extensionCount: 1 },
         }
+      );
 
-        if (reservation.dueDate <= new Date()) {
-          fail("Overdue reservations cannot be renewed.");
-        }
+      if (result.modifiedCount !== 1) {
+        fail("Reservation changed. Please try again.");
+      }
 
-        const previousDueDate = reservation.dueDate;
-
-        const newDueDate = new Date(
-          previousDueDate.getTime() +
-          LOAN_DAYS * 24 * 60 * 60 * 1000,
-        );
-
-        const result = await Reservation.updateOne(
-          {
-            _id: reservation._id,
-            status: "ACTIVE",
-            extensionCount: { $lt: MAX_RENEWALS },
-            dueDate: previousDueDate,
-          },
-          {
-            $set: { dueDate: newDueDate },
-            $inc: { extensionCount: 1 },
-          },
-          { session },
-        );
-
-        if (result.modifiedCount !== 1) {
-          fail("Reservation changed. Please try again.");
-        }
-
-        return Reservation.findById(reservation._id).session(session);
-      });
+      return Reservation.findById(reservation._id);
     },
-
+    
     returnBook: async (_, { id }, context) => {
       const user = requireAuth(context);
 
-      return runTransaction(async (session) => {
-        const reservation = await ensureReservationExists(id, session);
+      const reservation = await ensureReservationExists(id);
 
-        assertReservationOwner(reservation, user);
-        assertActiveReservation(reservation);
+      assertReservationOwner(reservation, user);
+      assertActiveReservation(reservation);
 
-        const result = await Reservation.updateOne(
-          {
-            _id: reservation._id,
-            status: "ACTIVE",
+      const result = await Reservation.updateOne(
+        {
+          _id: reservation._id,
+          status: "ACTIVE",
+        },
+        {
+          $set: {
+            status: "RETURNED",
+            returnedAt: new Date(),
           },
-          {
-            $set: {
-              status: "RETURNED",
-              returnedAt: new Date(),
-            },
-          },
-          { session },
-        );
-
-        if (result.modifiedCount !== 1) {
-          fail("Reservation has already changed.");
         }
+      );
 
-        await Book.updateOne(
-          { _id: reservation.bookId },
-          { $inc: { availableCopies: 1 } },
-          { session },
-        );
+      if (result.modifiedCount !== 1) {
+        fail("Reservation has already changed.");
+      }
 
-        return Reservation.findById(reservation._id).session(session);
-      });
+      await Book.updateOne(
+        { _id: reservation.bookId },
+        { $inc: { availableCopies: 1 } }
+      );
+
+      return Reservation.findById(reservation._id);
     },
   },
 
