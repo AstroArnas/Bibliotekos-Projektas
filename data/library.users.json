@@ -1,33 +1,68 @@
 [{
   "_id": {
-    "$oid": "6ae05faf255ca0fa0c09c8bc"
+    "$oid": "6ae9a7cb43754c2c772deb54"
   },
-  "name": "user",
-  "email": "user@gmail.com",
-  "passwordHash": "$2b$12$ythl1xkXmOR9PhCZrmWxoux.dnwe7oQKnlKm/AAvVJUEZ4gRuZLdu",
+  "name": "admin",
+  "email": "admin@gmail.com",
+  "passwordHash": "$2b$12$h2AR4gZTMxMCeAGIREc3Z.bap/hBMdxbymX1iJLrpNerYr0L4yTne",
   "role": "ADMIN",
+  "isActive": true,
   "createdAt": {
-    "$date": "2026-10-27T08:24:15.495Z"
+    "$date": "2026-11-03T09:22:19.413Z"
   },
   "updatedAt": {
-    "$date": "2026-10-27T08:24:15.495Z"
+    "$date": "2026-11-03T09:22:19.413Z"
   },
   "__v": 0
 },
 {
   "_id": {
-    "$oid": "6ae0665305b6f3147e91dc8b"
+    "$oid": "6ae9a81343754c2c772deb55"
   },
-  "name": "user2",
-  "email": "user2@gmail.com",
-  "passwordHash": "$2b$12$SDka2cqEZe9KZHNj9TED1O/GA.0oiIaTlqHbuy/hXZwxFQ/jmuSm.",
+  "name": "user1",
+  "email": "user1@gmail.com",
+  "passwordHash": "$2b$12$Er3Q4sPGQa7aMQfacPxwYuYvKGEHjk/0TwPKcxmIgZVayNl.WjB3S",
   "role": "USER",
   "isActive": true,
   "createdAt": {
-    "$date": "2026-10-27T08:52:35.816Z"
+    "$date": "2026-11-03T09:23:31.780Z"
   },
   "updatedAt": {
-    "$date": "2026-10-27T08:52:35.816Z"
+    "$date": "2026-11-03T09:23:31.780Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6ae9a82343754c2c772deb56"
+  },
+  "name": "user2",
+  "email": "user2@gmail.com",
+  "passwordHash": "$2b$12$jGtS6sUC14tbaSl5NNmCd.l9lMUd7YR3ePi0gU.LF8Oq2TtnX/oi.",
+  "role": "USER",
+  "isActive": true,
+  "createdAt": {
+    "$date": "2026-11-03T09:23:47.282Z"
+  },
+  "updatedAt": {
+    "$date": "2026-11-03T09:23:47.282Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6ae9a83643754c2c772deb57"
+  },
+  "name": "user3",
+  "email": "user3@gmail.com",
+  "passwordHash": "$2b$12$nS4XgAGX6IRKbKVsY8/f/.Jffa78dQn29rtWnDt2p6/kvoXm5j7dy",
+  "role": "USER",
+  "isActive": true,
+  "createdAt": {
+    "$date": "2026-11-03T09:24:06.800Z"
+  },
+  "updatedAt": {
+    "$date": "2026-11-03T09:24:06.800Z"
   },
   "__v": 0
 }]

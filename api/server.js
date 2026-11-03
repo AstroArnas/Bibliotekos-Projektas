@@ -9,9 +9,9 @@ import { ApolloServerPluginDrainHttpServer } from "@apollo/server/plugin/drainHt
 import http from "node:http";
 import { GraphQLError } from "graphql";
 
-import { typeDefs } from "./graphql/typeDefs.js";
-import { resolvers } from "./graphql/resolvers.js";
-import { createContext } from "./middleware/auth.js";
+import { typeDefs } from "./src/graphql/typeDefs.js";
+import { resolvers } from "./src/graphql/resolvers.js";
+import { createContext } from "./src/middleware/auth.js";
 
 const PORT = Number(process.env.PORT || 4000);
 const MONGODB_URI = process.env.MONGODB_URI;
