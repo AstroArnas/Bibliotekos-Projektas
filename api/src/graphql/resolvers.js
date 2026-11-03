@@ -645,11 +645,9 @@ export const resolvers = {
     id: (book) => book._id.toString(),
 
     category: async (book) => {
-      if (book.category && book.category.name) {
-        return book.category;
-      }
+      if (!book.categoryId) return null;
 
-      return Category.findById(book.category);
+      return Category.findById(book.categoryId);
     },
 
     createdAt: (book) => toDate(book.createdAt),

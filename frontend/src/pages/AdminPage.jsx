@@ -85,6 +85,7 @@ export default function AdminPage() {
   const {
     data: bookData,
     loading: booksLoading,
+    error: booksError,
     refetch: refetchBooks,
   } = useQuery(GET_BOOKS, {
     variables: {
@@ -92,6 +93,9 @@ export default function AdminPage() {
       categoryId: null,
       page: 1,
       limit: 100,
+    },
+    onError: (error) => {
+      console.error("GET_BOOKS ERROR:", error);
     },
   });
 
@@ -225,11 +229,10 @@ export default function AdminPage() {
             key={item.id}
             type="button"
             aria-pressed={tab === item.id}
-            className={`rounded-lg px-4 py-2.5 text-sm font-semibold transition focus:outline-none focus:ring-4 focus:ring-blue-100 ${
-              tab === item.id
-                ? "bg-library-primary text-white shadow-sm"
-                : "bg-white text-slate-600 hover:bg-slate-100"
-            }`}
+            className={`rounded-lg px-4 py-2.5 text-sm font-semibold transition focus:outline-none focus:ring-4 focus:ring-blue-100 ${tab === item.id
+              ? "bg-library-primary text-white shadow-sm"
+              : "bg-white text-slate-600 hover:bg-slate-100"
+              }`}
             onClick={() => {
               setTab(item.id);
               setMessage("");
@@ -317,6 +320,7 @@ export default function AdminPage() {
                           categoryId: e.target.value,
                         })
                       }
+                      required
                     >
                       <option value="">Pasirinkite kategoriją</option>
                       {categories
@@ -425,7 +429,13 @@ export default function AdminPage() {
           </h2>
 
           {booksLoading ? (
-            <p className="py-8 text-sm text-slate-500">Kraunamos knygos...</p>
+            <p className="py-8 text-sm text-slate-500">
+              Loading books...
+            </p>
+          ) : booksError ? (
+            <p className="rounded-lg bg-red-50 p-4 text-sm text-red-700">
+              Failed to load books: {booksError.message}
+            </p>
           ) : (
             <AdminTable
               headers={[
@@ -445,11 +455,10 @@ export default function AdminPage() {
                   </td>
                   <td className={tableCellClass}>
                     <span
-                      className={`inline-flex rounded-full px-2.5 py-1 text-xs font-semibold ${
-                        book.isActive === false
-                          ? "bg-slate-100 text-slate-600"
-                          : "bg-green-100 text-green-700"
-                      }`}
+                      className={`inline-flex rounded-full px-2.5 py-1 text-xs font-semibold ${book.isActive === false
+                        ? "bg-slate-100 text-slate-600"
+                        : "bg-green-100 text-green-700"
+                        }`}
                     >
                       {book.isActive === false ? "Archyvuota" : "Aktyvi"}
                     </span>
@@ -587,11 +596,10 @@ export default function AdminPage() {
                   <td className={tableCellClass}>{user.role}</td>
                   <td className={tableCellClass}>
                     <span
-                      className={`inline-flex rounded-full px-2.5 py-1 text-xs font-semibold ${
-                        user.isActive === false
-                          ? "bg-slate-100 text-slate-600"
-                          : "bg-green-100 text-green-700"
-                      }`}
+                      className={`inline-flex rounded-full px-2.5 py-1 text-xs font-semibold ${user.isActive === false
+                        ? "bg-slate-100 text-slate-600"
+                        : "bg-green-100 text-green-700"
+                        }`}
                     >
                       {user.isActive === false ? "Išjungta" : "Aktyvi"}
                     </span>
