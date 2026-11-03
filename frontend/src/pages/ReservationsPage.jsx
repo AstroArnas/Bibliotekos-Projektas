@@ -142,11 +142,11 @@ export default function ReservationsPage() {
 
                 <div className="min-w-0">
                   <h2 className="mb-1 text-lg font-bold leading-snug text-[#263347]">
-                    {reservation.bookId?.title || "Nežinoma knyga"}
+                    {reservation.book?.title || "Nežinoma knyga"}
                   </h2>
 
                   <p className="mb-3 text-sm text-slate-500">
-                    {reservation.bookId?.author || "Autorius nenurodytas"}
+                    {reservation.book?.author || "Autorius nenurodytas"}
                   </p>
 
                   <div className="space-y-1 text-sm text-slate-600">

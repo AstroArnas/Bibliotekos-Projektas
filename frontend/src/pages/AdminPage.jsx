@@ -182,7 +182,6 @@ export default function AdminPage() {
           ...bookForm,
           publicationYear: year,
           totalCopies: copies,
-          availableCopies: copies,
           categoryId: bookForm.categoryId || null,
         },
       },
